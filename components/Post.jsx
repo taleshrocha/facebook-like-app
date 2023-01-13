@@ -42,14 +42,14 @@ function Post() {
       </div>
 
       {/** Like, Comments, Share */}
-      <div className="flex justify-center">
-        <hr />
+      <div className="flex justify-center border-y m-2">
         <IconButton Icon={ThumbUpIcon} name="Like" />
         <IconButton Icon={ChatIcon} name="Comment" />
         <IconButton Icon={ShareIcon} name="Share" />
       </div>
 
       {/** Comments*/}
+      <div className="p-8"></div>
     </div>
   );
 }
@@ -58,7 +58,7 @@ function IconButton({ Icon, name }) {
   return (
     <div
       className="flex space-x-2 px-8 py-1 hover:bg-gray-200 transition-all
-     duration-200 ease-out rounded-sm text-gray-500 hover:cursor-pointer"
+     duration-200 ease-out rounded-sm text-gray-500 hover:cursor-pointer my-1"
     >
       <Icon className="h-6" />
       <p className="font-bold">{name}</p>
