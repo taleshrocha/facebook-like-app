@@ -1,5 +1,4 @@
 function HeaderIcon({ Icon, active }) {
-  console.log(`Active: ${active}`);
   return (
     <div
       className="flex items-center cursor-pointer md:px-10 sm:h-14

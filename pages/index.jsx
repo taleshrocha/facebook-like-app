@@ -13,7 +13,7 @@ export default function Home() {
 
       <Header />
 
-      <main className="grid grid-cols-3 max-w-6xl">
+      <main className="grid grid-cols-3 max-w-full">
         {/* Sidebar */}
         <Feed className="" />
         {/* Widgets */}
