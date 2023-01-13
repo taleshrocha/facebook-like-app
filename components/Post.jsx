@@ -6,33 +6,36 @@ import {
 import { useSession } from "next-auth/react";
 function Post() {
   return (
-    <div>
+    <div className="border border-gray-300 rounded-lg">
       {/** Header */}
-      <div>
-        <div className="flex p-4 justify-between items-center">
-          <img
-            className="h-12 rounded-full"
-            src="https://github.com/taleshrocha.png"
-            alt=""
-          />
-          <div className="ml-2 flex-1">
-            <h1 className="font-bold">Tales Rocha</h1>
-            <div className="flex items-baseline text-gray-500 text-sm">
-              {/** Message elapsed time */}
-              <p>2d . </p>
-              <GlobeIcon className="h-4" />
-            </div>
+      <div className="flex justify-between items-center p-2">
+        <img
+          className="h-12 rounded-full"
+          src="https://github.com/taleshrocha.png"
+          alt=""
+        />
+        <div className="ml-2 flex-1">
+          <h1 className="font-bold">Tales Rocha</h1>
+          <div className="flex items-baseline text-gray-500 text-sm">
+            {/** Message elapsed time */}
+            <p>2d . </p>
+            <GlobeIcon className="h-4" />
           </div>
-          <DotsHorizontalIcon className="icon bg-transparent" />
         </div>
+        <DotsHorizontalIcon className="icon bg-transparent" />
       </div>
 
       {/** Caption */}
       <div>
-        <p>Yoo look at that!</p>
+        <p className="ml-2">Yoo look at that!</p>
       </div>
 
       {/** Content */}
+      <img
+        className="object-cover w-full"
+        src="https://github.com/taleshrocha.png"
+        alt=""
+      />
 
       {/** Content Info */}
 

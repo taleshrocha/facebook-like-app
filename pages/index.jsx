@@ -15,7 +15,7 @@ export default function Home() {
 
       <main className="grid grid-cols-3 max-w-6xl">
         {/* Sidebar */}
-        <Feed />
+        <Feed className="" />
         {/* Widgets */}
       </main>
     </>
