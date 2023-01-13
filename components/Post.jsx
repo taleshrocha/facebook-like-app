@@ -1,7 +1,36 @@
 import { DotsHorizontalIcon, GlobeIcon } from "@heroicons/react/solid";
-import { ChatIcon, ThumbUpIcon, ShareIcon } from "@heroicons/react/outline";
+import {
+  EmojiHappyIcon,
+  ChatIcon,
+  ThumbUpIcon,
+  ShareIcon,
+} from "@heroicons/react/outline";
+import { useSession } from "next-auth/react";
 
 function Post() {
+  const { data: session } = useSession();
+
+  const comments = [
+    {
+      id: 1,
+      name: "Tales Rocha",
+      image: "https://github.com/taleshrocha.png",
+      input: "Comment one. Hello",
+    },
+    {
+      id: 2,
+      name: "Mozart",
+      image: "https://github.com/taleshrocha.png",
+      input: "Comment two. World",
+    },
+    {
+      id: 3,
+      name: "Bethoveen",
+      image: "https://github.com/taleshrocha.png",
+      input: "Comment three. I'm Tales Rocha",
+    },
+  ];
+
   return (
     <div className="border border-gray-300 rounded-lg">
       {/** Header */}
@@ -48,8 +77,33 @@ function Post() {
         <IconButton Icon={ShareIcon} name="Share" />
       </div>
 
+      {/** Comment Input */}
+      {session && (
+        <div className="flex items-center m-4">
+          <img className="h-8 rounded-full" src={session.user.image} alt="" />
+
+          <div className="flex bg-gray-200 rounded-full p-1 ml-2 flex-1">
+            <input
+              className="ml-2 bg-transparent outline-none flex-1 text-sm"
+              placeholder="Write a comment..."
+            />
+            <EmojiHappyIcon className="h-6 text-gray-500" />
+          </div>
+        </div>
+      )}
+
       {/** Comments*/}
-      <div className="p-8"></div>
+      {comments.map((comment) => (
+        <div key={comment.id}>
+          <div className="flex">
+            <img className="h-8 rounded-full" src={comment.image} alt="" />
+            <div>
+              <p>{comment.name}</p>
+              <p>{comment.input}</p>
+            </div>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
