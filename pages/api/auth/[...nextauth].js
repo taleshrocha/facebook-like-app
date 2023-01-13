@@ -1,11 +1,15 @@
 import NextAuth from "next-auth";
-import Providers from "next-auth/providers";
+import FacebookProvider from "next-auth/providers/facebook";
 
 export default NextAuth({
   providers: [
-    Providers.Facebook({
+    FacebookProvider({
       clientId: process.env.FACEBOOK_CLIENT_ID,
       clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
     }),
   ],
+  pages: {
+    signIn: "/auth/signin",
+  },
+  secret: process.env.FACEBOOK_CLIENT_SECRET,
 });
