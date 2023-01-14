@@ -94,12 +94,21 @@ function Post() {
 
       {/** Comments*/}
       {comments.map((comment) => (
-        <div key={comment.id}>
+        <div key={comment.id} className="mx-4 my-1">
           <div className="flex">
             <img className="h-8 rounded-full" src={comment.image} alt="" />
-            <div>
-              <p>{comment.name}</p>
-              <p>{comment.input}</p>
+            {/** Name and comment */}
+            <div className="ml-2">
+              <div className="bg-gray-200 rounded-2xl p-2 items-center">
+                <p className="font-bold text-sm">{comment.name}</p>
+                <p className="text-sm">{comment.input}</p>
+              </div>
+              {/** Likes, shares */}
+              <div className="ml-4 flex space-x-6 items-end">
+                <CommentButton name="Like" />
+                <CommentButton name="Reply" />
+                <p className="font-normal text-xs text-gray-500">5h</p>
+              </div>
             </div>
           </div>
         </div>
@@ -118,6 +127,10 @@ function IconButton({ Icon, name }) {
       <p className="font-bold">{name}</p>
     </div>
   );
+}
+
+function CommentButton({ name }) {
+  return <button className="text-gray-500 font-bold text-sm">{name}</button>;
 }
 
 export default Post;
