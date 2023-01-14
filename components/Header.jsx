@@ -14,7 +14,7 @@ import {
   ShoppingCartIcon,
 } from "@heroicons/react/outline";
 import HeaderIcon from "./HeaderIcon";
-import { signOut, useSession } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 
 function Header() {
   const { data: session } = useSession();
@@ -50,22 +50,33 @@ function Header() {
       </div>
 
       {/* Right */}
-      <div className="flex items-center sm:space-x-2 justify-end">
-        {/* Profile Pic */}
+      {/* Profile Pic */}
 
-        <p className="whitespace-nowrap font-semibold pr-3 ">Tales Rocha</p>
-        <ViewGridIcon className="icon" />
-        <ChatIcon className="icon" />
-        <BellIcon className="icon" />
-        {session && (
+      {session ? (
+        <div className="flex items-center sm:space-x-2 justify-end">
+          <p className="whitespace-nowrap font-semibold pr-3 ">
+            {session.user.name}
+          </p>
+
+          <ViewGridIcon className="icon" />
+          <ChatIcon className="icon" />
+          <BellIcon className="icon" />
+
           <img
             onClick={signOut}
             className="icon p-0 hover:brightness-90"
             src={session.user.image}
             alt=""
           />
-        )}
-      </div>
+        </div>
+      ) : (
+        <button
+          className="whitespace-nowrap font-semibold pr-3 "
+          onClick={signIn}
+        >
+          Sign In
+        </button>
+      )}
     </div>
   );
 }

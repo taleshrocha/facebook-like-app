@@ -3,6 +3,7 @@ import Header from "../components/Header";
 import { signIn, useSession } from "next-auth/react";
 import Feed from "../components/Feed";
 import LeftBar from "../components/LeftBar";
+import Conversations from "../components/Conversations";
 
 export default function Home() {
   const { data: session } = useSession();
@@ -16,8 +17,8 @@ export default function Home() {
 
       <main className="grid grid-cols-3 max-w-full">
         {session && <LeftBar />}
-        <Feed className="" />
-        {/* Widgets */}
+        <Feed />
+        <Conversations />
       </main>
     </div>
   );
