@@ -121,11 +121,11 @@ function Post() {
 function IconButton({ Icon, name }) {
   return (
     <div
-      className="flex space-x-2 px-8 py-1 hover:bg-gray-200 transition-all
+      className="flex space-x-2 px-8 py-1 hover:bg-gray-200 transition-all items-center
      duration-200 ease-out rounded-sm text-gray-500 hover:cursor-pointer my-1"
     >
-      <Icon className="h-6" />
-      <p className="font-bold">{name}</p>
+      <Icon className="h-4 sm:h-6" />
+      <p className="text-xs sm:text-base font-bold">{name}</p>
     </div>
   );
 }

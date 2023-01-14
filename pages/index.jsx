@@ -15,11 +15,13 @@ export default function Home() {
 
       <Header />
 
-      <main className="grid grid-cols-3 max-w-full">
-        {session && <LeftBar />}
-        <Feed />
-        <Conversations />
-      </main>
+      {session && (
+        <main className="grid grid-cols-3 max-w-full">
+          <LeftBar />
+          <Feed />
+          <Conversations />
+        </main>
+      )}
     </div>
   );
 }

@@ -4,7 +4,7 @@ import { useSession } from "next-auth/react";
 function LeftBar() {
   const { data: session } = useSession();
   return (
-    <div className="flex flex-col max-w-xs mt-4">
+    <div className="hidden sm:flex flex-col md:max-w-xs mt-4">
       <BarButton
         name={session.user.name}
         Icon={() => (

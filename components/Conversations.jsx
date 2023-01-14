@@ -9,7 +9,7 @@ import { useSession } from "next-auth/react";
 export default function Conversations() {
   const { data: session } = useSession();
   return (
-    <div className="flex flex-col mt-4 mr-3 container max-w-xs justify-self-end">
+    <div className="hidden lg:flex flex-col mt-4 mr-3 container max-w-xs justify-self-end">
       <button
         className="hover:bg-gray-200 p-3 w-full flex space-x-2
     rounded-lg items-center transition-color duration-500 ease-out"
