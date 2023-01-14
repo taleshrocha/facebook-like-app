@@ -32,9 +32,9 @@ function Post() {
   ];
 
   return (
-    <div className="border border-gray-300 rounded-lg">
+    <div className="border border-gray-300 rounded-lg bg-white">
       {/** Header */}
-      <div className="flex justify-between items-center p-2">
+      <div className="flex justify-between items-center p-2 mx-2 mt-2">
         <img
           className="h-12 rounded-full"
           src="https://github.com/taleshrocha.png"
@@ -42,9 +42,10 @@ function Post() {
         />
         <div className="ml-2 flex-1">
           <h1 className="font-bold">Tales Rocha</h1>
-          <div className="flex items-baseline text-gray-500 text-sm">
+          <div className="flex items-center space-x-1 text-gray-500 text-sm">
             {/** Message elapsed time */}
-            <p>2d . </p>
+            <p>2d</p>
+            <p>·</p>
             <GlobeIcon className="h-4" />
           </div>
         </div>
@@ -52,7 +53,7 @@ function Post() {
       </div>
 
       {/** Caption */}
-      <p className="ml-2 mb-2">Yoo look at that!</p>
+      <p className="ml-4 mb-2">Yoo look at that!</p>
 
       {/** Content */}
       <img

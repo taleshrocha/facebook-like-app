@@ -2,7 +2,7 @@ import Post from "./Post";
 
 function Feed() {
   return (
-    <div>
+    <div className="mt-4">
       <Post />
     </div>
   );

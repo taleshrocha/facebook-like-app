@@ -2,11 +2,12 @@ import Head from "next/head";
 import Header from "../components/Header";
 import { signIn, useSession } from "next-auth/react";
 import Feed from "../components/Feed";
+import LeftBar from "../components/LeftBar";
 
 export default function Home() {
   const { data: session } = useSession();
   return (
-    <>
+    <div className="bg-gray-100">
       <Head>
         <title>Facebook</title>
       </Head>
@@ -14,10 +15,10 @@ export default function Home() {
       <Header />
 
       <main className="grid grid-cols-3 max-w-full">
-        {/* Sidebar */}
+        {session && <LeftBar />}
         <Feed className="" />
         {/* Widgets */}
       </main>
-    </>
+    </div>
   );
 }
