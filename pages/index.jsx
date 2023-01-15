@@ -4,6 +4,7 @@ import { signIn, useSession } from "next-auth/react";
 import Feed from "../components/Feed";
 import LeftBar from "../components/LeftBar";
 import Conversations from "../components/Conversations";
+import Modal from "../components/Modal";
 
 export default function Home() {
   const { data: session } = useSession();
@@ -23,6 +24,8 @@ export default function Home() {
           <Conversations />
         </main>
       )}
+
+      <Modal />
     </div>
   );
 }

@@ -32,7 +32,7 @@ function Post() {
   ];
 
   return (
-    <div className="border border-gray-300 rounded-lg bg-white">
+    <div className="border border-gray-300 rounded-lg bg-white mb-4">
       {/** Header */}
       <div className="flex justify-between items-center p-2 mx-2 mt-2">
         <img
