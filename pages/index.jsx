@@ -7,6 +7,7 @@ import Conversations from "../components/Conversations";
 
 export default function Home() {
   const { data: session } = useSession();
+  console.log(session);
   return (
     <div className="bg-gray-100">
       <Head>
