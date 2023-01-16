@@ -1,9 +1,13 @@
 import { useSession } from "next-auth/react";
+import { useContext } from "react";
+import { ModalContext } from "../contexts/ModalContext";
 import Post from "./Post";
 
 function Feed() {
   const { data: session } = useSession();
   const firstName = session.user.name.split(" ")[0];
+  const { openModal } = useContext(ModalContext);
+
   return (
     <div className="col-span-3 sm:col-span-2 sm:pr-4 lg:col-span-1 lg:pr-0">
       {/** Add post */}
@@ -12,6 +16,7 @@ function Feed() {
         <button
           className="bg-gray-100 text-gray-500 rounded-full px-3 flex-1 mx-3
         hover:bg-gray-300 text-start -py-1"
+          onClick={openModal}
         >
           What's on your mind, {firstName}?
         </button>

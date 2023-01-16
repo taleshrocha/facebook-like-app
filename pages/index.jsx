@@ -5,6 +5,7 @@ import Feed from "../components/Feed";
 import LeftBar from "../components/LeftBar";
 import Conversations from "../components/Conversations";
 import Modal from "../components/Modal";
+import { ModalProvider } from "../contexts/ModalContext";
 
 export default function Home() {
   const { data: session } = useSession();
@@ -20,12 +21,13 @@ export default function Home() {
       {session && (
         <main className="grid grid-cols-3 max-w-full">
           <LeftBar />
-          <Feed />
+          <ModalProvider>
+            <Feed />
+            <Modal />
+          </ModalProvider>
           <Conversations />
         </main>
       )}
-
-      <Modal />
     </div>
   );
 }
