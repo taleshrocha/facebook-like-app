@@ -19,7 +19,7 @@ import { signIn, signOut, useSession } from "next-auth/react";
 function Header() {
   const { data: session } = useSession();
   return (
-    <div className="sticky top-0 z-50 bg-white flex items-center p-2 lg:px-5 shadow-md">
+    <div className="sticky top-0 z-10 bg-white flex items-center p-2 lg:px-5 shadow-md">
       {/* Left */}
       <div className="flex items-center">
         <Image

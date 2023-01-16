@@ -17,14 +17,15 @@ export default function Home() {
       </Head>
 
       <Header />
-
       {session && (
         <main className="grid grid-cols-3 max-w-full">
           <LeftBar />
+
           <ModalProvider>
             <Feed />
             <Modal />
           </ModalProvider>
+
           <Conversations />
         </main>
       )}
