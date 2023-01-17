@@ -1,9 +1,13 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useContext, useState } from "react";
 import { ModalContext } from "../contexts/ModalContext";
+import { XIcon } from "@heroicons/react/outline";
+import { useSession } from "next-auth/react";
 
 export default function Modal() {
   const { isOpen, closeModal } = useContext(ModalContext);
+  const { data: session } = useSession();
+  const firstName = session.user.name.split(" ")[0];
 
   return (
     <>
@@ -18,7 +22,7 @@ export default function Modal() {
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <div className="fixed z-20 inset-0 bg-white bg-opacity-75" />
+            <div className="fixed z-20 inset-0 bg-gray-200 bg-opacity-75" />
           </Transition.Child>
 
           <div className="fixed z-20 inset-0 overflow-y-auto">
@@ -32,27 +36,55 @@ export default function Modal() {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-                  <Dialog.Title
-                    as="h3"
-                    className="text-xlg font-bold leading-6 text-gray-900"
-                  >
-                    Create post
-                  </Dialog.Title>
-                  <div className="mt-2">
-                    <p className="text-sm text-gray-500">
-                      Your payment has been successfully submitted. We’ve sent
-                      you an email with all of the details of your order.
-                    </p>
-                  </div>
+                <Dialog.Panel
+                  className="flex flex-col max-w-lg 
+                  transform overflow-hidden rounded-lg w-full
+                bg-white shadow-2xl transition-all"
+                >
+                  {/** ### CONTENT ### */}
+                  <div className="items-center">
+                    {/** Header */}
+                    <div className="flex items-center justify-center border-b p-4 relative">
+                      <h1 className="flex-1 font-bold text-2xl">Create post</h1>
+                      <button
+                        className="rounded-full bg-gray-300 p-1 hover:bg-gray-400 active:scale-90"
+                        onClick={closeModal}
+                      >
+                        <XIcon className="h-7 text-gray-600" />
+                      </button>
+                    </div>
 
-                  <div className="mt-4">
+                    {/** User */}
+                    <div className="flex p-3">
+                      <img
+                        className="rounded-full h-12 mr-2"
+                        src={session.user.image}
+                        alt=""
+                      />
+                      <h1 className="font-bold">{session.user.name}</h1>
+                    </div>
+
+                    {/** Text Area */}
+                    <textarea
+                      className="text-2xl font-medium p-3 outline-none"
+                      name=""
+                      id=""
+                      cols="30"
+                      rows="10"
+                      placeholder={`What's on your mind, ${firstName}?`}
+                    ></textarea>
+
+                    {/** Add Image Button */}
+                    <button className="shadow-sm border rounded-md px-4 py-3 font-bold max-w-md w-full items-center mb-4">
+                      Add an image to your post
+                    </button>
+
+                    {/** Post Button*/}
                     <button
-                      type="button"
-                      className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                      className="border rounded-md px-4 py-3 font-bold max-w-md w-full items-center"
                       onClick={closeModal}
                     >
-                      Got it, thanks!
+                      Post
                     </button>
                   </div>
                 </Dialog.Panel>
