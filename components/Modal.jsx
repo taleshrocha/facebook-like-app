@@ -3,14 +3,23 @@ import { Fragment, useContext, useRef, useState } from "react";
 import { ModalContext } from "../contexts/ModalContext";
 import { XIcon } from "@heroicons/react/outline";
 import { useSession } from "next-auth/react";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
-import { db } from "../firebase";
+import {
+  addDoc,
+  collection,
+  doc,
+  serverTimestamp,
+  updateDoc,
+} from "firebase/firestore";
+import { db, storage } from "../firebase";
+import { getDownloadURL, ref, uploadString } from "firebase/storage";
 
 export default function Modal() {
   const { isOpen, closeModal } = useContext(ModalContext);
   const { data: session } = useSession();
+  const [selectedImage, setSelectedImage] = useState(null);
   const firstName = session.user.name.split(" ")[0];
   const textRef = useRef(null);
+  const filePickerRef = useRef(null);
 
   const uploadPost = async () => {
     // Create a post and add to the firestore 'posts' collection
@@ -21,7 +30,38 @@ export default function Modal() {
       timeStamp: serverTimestamp(),
     });
 
-    console.log("DOC ADDED WITH ID:", docRef.id);
+    console.log("\t### Modal -- uploadPost ###\nDOC ADDED WITH ID:", docRef.id);
+
+    const imageRef = ref(storage, `posts/$docRef.id}/image`);
+
+    await uploadString(imageRef, selectedImage, "data_url").then(
+      async (snapshot) => {
+        const downloadURL = await getDownloadURL(imageRef);
+        await updateDoc(doc(db, "posts", docRef.id), {
+          image: downloadURL,
+        });
+      }
+    );
+
+    setSelectedImage(null);
+
+    console.log(
+      "\t### Modal -- uploadPost ###\nIMAGE ADDED TO DOC, WITH ID:",
+      docRef.id
+    );
+
+    closeModal;
+  };
+
+  const getImage = (e) => {
+    const reader = new FileReader();
+    if (e.target.files[0]) {
+      reader.readAsDataURL(e.target.files[0]);
+    }
+
+    reader.onload = (readerEvent) => {
+      setSelectedImage(readerEvent.target.result);
+    };
   };
 
   return (
@@ -91,9 +131,18 @@ export default function Modal() {
                     ></textarea>
 
                     {/** Add Image Button */}
-                    <button className="shadow-sm border rounded-md px-4 py-3 font-bold max-w-md w-full items-center mb-4">
+                    <button
+                      className="shadow-sm border rounded-md px-4 py-3 font-bold max-w-md w-full items-center mb-4"
+                      onClick={() => filePickerRef.current.click()}
+                    >
                       Add an image to your post
                     </button>
+                    <input
+                      ref={filePickerRef}
+                      type="file"
+                      hidden
+                      onChange={getImage}
+                    />
 
                     {/** Post Button*/}
                     <button
