@@ -23,6 +23,9 @@ export default function Modal() {
 
   const uploadPost = async () => {
     // Create a post and add to the firestore 'posts' collection
+
+    if (!textRef.current.value) return;
+
     const docRef = await addDoc(collection(db, "posts"), {
       userName: session.user.name,
       userImg: session.user.image,
@@ -31,6 +34,11 @@ export default function Modal() {
     });
 
     console.log("\t### Modal -- uploadPost ###\nDOC ADDED WITH ID:", docRef.id);
+
+    if (!selectedImage) {
+      closeModal();
+      return;
+    }
 
     const imageRef = ref(storage, `posts/$docRef.id}/image`);
 
@@ -50,7 +58,7 @@ export default function Modal() {
       docRef.id
     );
 
-    closeModal;
+    closeModal();
   };
 
   const getImage = (e) => {
@@ -91,86 +99,84 @@ export default function Modal() {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
+                {/** ### CONTENT ### */}
                 <Dialog.Panel
-                  className="flex flex-col max-w-lg 
+                  className="flex flex-col max-w-lg p-4 
                   transform overflow-hidden rounded-lg w-full
-                bg-white shadow-2xl transition-all"
+                bg-white shadow-2xl transition-all items-center space-y-4"
                 >
-                  {/** ### CONTENT ### */}
-                  <div className="items-center">
-                    {/** Header */}
-                    <div className="flex items-center justify-center border-b p-4 relative">
-                      <h1 className="flex-1 font-bold text-2xl">Create post</h1>
-                      <button
-                        className="rounded-full bg-gray-300 p-1 hover:bg-gray-400 active:scale-90"
-                        onClick={closeModal}
-                      >
-                        <XIcon className="h-7 text-gray-600" />
-                      </button>
-                    </div>
+                  {/** Header */}
+                  <h1 className="font-bold text-2xl">Create post</h1>
+                  <button
+                    className="absolute right-0 top-0 m-4 rounded-full bg-gray-300 p-1 hover:bg-gray-400 active:scale-90"
+                    onClick={closeModal}
+                  >
+                    <XIcon className="h-7 text-gray-600" />
+                  </button>
+                  <div className="border-b w-screen" />
 
-                    {/** User */}
-                    <div className="flex p-3">
+                  {/** User */}
+                  <div className="flex w-full items-start px-4 max-w-md">
+                    <img
+                      className="rounded-full h-12 mr-2"
+                      src={session.user.image}
+                      alt=""
+                    />
+                    <h1 className="font-bold">{session.user.name}</h1>
+                  </div>
+
+                  {/** Text Area */}
+                  <textarea
+                    className={`text-2xl font-medium p-3 outline-none h-40 ${
+                      selectedImage && "h-15 w-full max-w-md"
+                    }`}
+                    name=""
+                    id=""
+                    cols="30"
+                    rows="10"
+                    placeholder={`What's on your mind, ${firstName}?`}
+                    ref={textRef}
+                  ></textarea>
+
+                  {selectedImage && (
+                    <div className="rounded-lg border p-2 bg-white relative max-w-md w-full">
                       <img
-                        className="rounded-full h-12 mr-2"
-                        src={session.user.image}
+                        className="rounded-lg object-contain"
+                        src={selectedImage}
                         alt=""
                       />
-                      <h1 className="font-bold">{session.user.name}</h1>
-                    </div>
-
-                    {/** Text Area */}
-                    <textarea
-                      className={`text-2xl font-medium p-3 outline-none h-40 ${
-                        selectedImage && "h-15"
-                      }`}
-                      name=""
-                      id=""
-                      cols="30"
-                      rows="10"
-                      placeholder={`What's on your mind, ${firstName}?`}
-                      ref={textRef}
-                    ></textarea>
-
-                    {selectedImage && (
-                      <div className="rounded-lg border p-3 bg-white relative max-w-md">
-                        <img
-                          className="rounded-lg object-contain"
-                          src={selectedImage}
-                          alt=""
-                        />
-                        <button
-                          className="absolute right-0 top-0 rounded-full bg-gray-100 p-1 
+                      <button
+                        className="absolute right-0 top-0 rounded-full bg-gray-100 p-1 
                           hover:bg-gray-200 active:scale-90 m-4"
-                          onClick={() => setSelectedImage(null)}
-                        >
-                          <XIcon className="h-5 text-gray-600" />
-                        </button>
-                      </div>
-                    )}
+                        onClick={() => setSelectedImage(null)}
+                      >
+                        <XIcon className="h-5 text-gray-600" />
+                      </button>
+                    </div>
+                  )}
 
-                    {/** Add Image Button */}
-                    <button
-                      className="shadow-sm border rounded-md px-4 py-3 font-bold max-w-md w-full items-center mb-4"
-                      onClick={() => filePickerRef.current.click()}
-                    >
-                      Add an image to your post
-                    </button>
-                    <input
-                      ref={filePickerRef}
-                      type="file"
-                      hidden
-                      onChange={getImage}
-                    />
+                  {/** Add Image Button */}
+                  <button
+                    className="shadow-sm border rounded-md px-4 py-3 font-bold max-w-md w-full items-center"
+                    onClick={() => filePickerRef.current.click()}
+                  >
+                    Add an image to your post
+                  </button>
+                  <input
+                    ref={filePickerRef}
+                    type="file"
+                    hidden
+                    onChange={getImage}
+                  />
 
-                    {/** Post Button*/}
-                    <button
-                      className="border rounded-md px-4 py-3 font-bold max-w-md w-full items-center"
-                      onClick={uploadPost}
-                    >
-                      Post
-                    </button>
-                  </div>
+                  {/** Post Button*/}
+                  <button
+                    className={`border rounded-md px-4 py-3 font-bold max-w-md w-full items-center
+                      bg-blue-600 text-white cursor-pointer`}
+                    onClick={uploadPost}
+                  >
+                    Post
+                  </button>
                 </Dialog.Panel>
               </Transition.Child>
             </div>
