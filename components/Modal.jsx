@@ -1,13 +1,28 @@
 import { Dialog, Transition } from "@headlessui/react";
-import { Fragment, useContext, useState } from "react";
+import { Fragment, useContext, useRef, useState } from "react";
 import { ModalContext } from "../contexts/ModalContext";
 import { XIcon } from "@heroicons/react/outline";
 import { useSession } from "next-auth/react";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { db } from "../firebase";
 
 export default function Modal() {
   const { isOpen, closeModal } = useContext(ModalContext);
   const { data: session } = useSession();
   const firstName = session.user.name.split(" ")[0];
+  const textRef = useRef(null);
+
+  const uploadPost = async () => {
+    // Create a post and add to the firestore 'posts' collection
+    const docRef = await addDoc(collection(db, "posts"), {
+      userName: session.user.name,
+      userImg: session.user.image,
+      text: textRef.current.value,
+      timeStamp: serverTimestamp(),
+    });
+
+    console.log("DOC ADDED WITH ID:", docRef.id);
+  };
 
   return (
     <>
@@ -72,6 +87,7 @@ export default function Modal() {
                       cols="30"
                       rows="10"
                       placeholder={`What's on your mind, ${firstName}?`}
+                      ref={textRef}
                     ></textarea>
 
                     {/** Add Image Button */}
@@ -82,7 +98,7 @@ export default function Modal() {
                     {/** Post Button*/}
                     <button
                       className="border rounded-md px-4 py-3 font-bold max-w-md w-full items-center"
-                      onClick={closeModal}
+                      onClick={uploadPost}
                     >
                       Post
                     </button>
