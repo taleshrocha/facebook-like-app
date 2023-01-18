@@ -121,7 +121,9 @@ export default function Modal() {
 
                     {/** Text Area */}
                     <textarea
-                      className="text-2xl font-medium p-3 outline-none"
+                      className={`text-2xl font-medium p-3 outline-none h-40 ${
+                        selectedImage && "h-15"
+                      }`}
                       name=""
                       id=""
                       cols="30"
@@ -129,6 +131,23 @@ export default function Modal() {
                       placeholder={`What's on your mind, ${firstName}?`}
                       ref={textRef}
                     ></textarea>
+
+                    {selectedImage && (
+                      <div className="rounded-lg border p-3 bg-white relative max-w-md">
+                        <img
+                          className="rounded-lg object-contain"
+                          src={selectedImage}
+                          alt=""
+                        />
+                        <button
+                          className="absolute right-0 top-0 rounded-full bg-gray-100 p-1 
+                          hover:bg-gray-200 active:scale-90 m-4"
+                          onClick={() => setSelectedImage(null)}
+                        >
+                          <XIcon className="h-5 text-gray-600" />
+                        </button>
+                      </div>
+                    )}
 
                     {/** Add Image Button */}
                     <button
