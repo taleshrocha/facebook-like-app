@@ -7,7 +7,7 @@ import {
 } from "@heroicons/react/outline";
 import { useSession } from "next-auth/react";
 
-function Post() {
+function Post({ image, text, timeStamp, userImg, userName }) {
   const { data: session } = useSession();
 
   const comments = [
@@ -35,13 +35,9 @@ function Post() {
     <div className="border border-gray-300 rounded-lg bg-white mb-4">
       {/** Header */}
       <div className="flex justify-between items-center p-2 mx-2 mt-2">
-        <img
-          className="h-12 rounded-full"
-          src="https://github.com/taleshrocha.png"
-          alt=""
-        />
+        <img className="h-12 rounded-full" src={userImg} alt="" />
         <div className="ml-2 flex-1">
-          <h1 className="font-bold">Tales Rocha</h1>
+          <h1 className="font-bold">{userName}</h1>
           <div className="flex items-center space-x-1 text-gray-500 text-sm">
             {/** Message elapsed time */}
             <p>2d</p>
@@ -53,14 +49,10 @@ function Post() {
       </div>
 
       {/** Caption */}
-      <p className="ml-4 mb-2">Yoo look at that!</p>
+      <p className="ml-4 mb-2">{text}</p>
 
       {/** Content */}
-      <img
-        className="object-cover w-full"
-        src="https://github.com/taleshrocha.png"
-        alt=""
-      />
+      {image && <img className="object-cover w-full" src={image} alt="" />}
 
       {/** Content Info */}
       <div className="flex justify-between text-sm text-gray-600 items-center p-2">

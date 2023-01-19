@@ -21,10 +21,12 @@ export default function Home() {
         <main className="grid grid-cols-3 max-w-full">
           <LeftBar />
 
-          <ModalProvider>
-            <Feed />
-            <Modal />
-          </ModalProvider>
+          {session && (
+            <ModalProvider>
+              <Feed />
+              <Modal />
+            </ModalProvider>
+          )}
 
           <Conversations />
         </main>

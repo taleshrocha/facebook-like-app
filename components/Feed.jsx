@@ -1,12 +1,30 @@
+import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import { useSession } from "next-auth/react";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ModalContext } from "../contexts/ModalContext";
+import { db } from "../firebase";
 import Post from "./Post";
 
 function Feed() {
   const { data: session } = useSession();
   const firstName = session.user.name.split(" ")[0];
   const { openModal } = useContext(ModalContext);
+  const [posts, setPosts] = useState();
+
+  console.log("HELLO");
+
+  useEffect(
+    () =>
+      onSnapshot(
+        query(collection(db, "posts"), orderBy("timeStamp", "desc")),
+        (snapshot) => {
+          setPosts(snapshot.docs);
+        }
+      ),
+    [db]
+  );
+
+  console.log("posts:", posts);
 
   return (
     <div className="col-span-3 sm:col-span-2 sm:pr-4 lg:col-span-1 lg:pr-0">
@@ -21,7 +39,16 @@ function Feed() {
           What's on your mind, {firstName}?
         </button>
       </div>
-      <Post />
+      {posts.map((post) => (
+        <Post
+          key={post.id}
+          image={post.data().image}
+          text={post.data().text}
+          timeStamp={post.data().timeStamp}
+          userImg={post.data().userImg}
+          userName={post.data().userName}
+        />
+      ))}
     </div>
   );
 }
