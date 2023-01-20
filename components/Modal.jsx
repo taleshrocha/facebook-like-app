@@ -20,9 +20,13 @@ export default function Modal() {
   const firstName = session.user.name.split(" ")[0];
   const textRef = useRef(null);
   const filePickerRef = useRef(null);
+  const [uploadingPost, setUploadingPost] = useState(false)
 
   const uploadPost = async () => {
     // Create a post and add to the firestore 'posts' collection
+    if(uploadingPost) return
+
+    setUploadingPost(true)
 
     if (!textRef.current.value) return;
 
@@ -34,6 +38,7 @@ export default function Modal() {
     });
 
     console.log("\t### Modal -- uploadPost ###\nDOC ADDED WITH ID:", docRef.id);
+
 
     if (!selectedImage) {
       closeModal();
@@ -52,6 +57,8 @@ export default function Modal() {
     );
 
     setSelectedImage(null);
+    setUploadingPost(false)
+    console.log(uploadingPost)
 
     console.log(
       "\t### Modal -- uploadPost ###\nIMAGE ADDED TO DOC, WITH ID:",
@@ -171,11 +178,10 @@ export default function Modal() {
 
                   {/** Post Button*/}
                   <button
-                    className={`border rounded-md px-4 py-3 font-bold max-w-md w-full items-center
-                      bg-blue-600 text-white cursor-pointer`}
+                    className={"border rounded-md px-4 py-3 font-bold max-w-md w-full items-center bg-blue-600 text-white cursor-pointer disabled:bg-gray-300 disabled:cursor-not-allowed"}
                     onClick={uploadPost}
                   >
-                    Post
+                    {uploadingPost ? "Uploading Post" : "Post"}
                   </button>
                 </Dialog.Panel>
               </Transition.Child>
