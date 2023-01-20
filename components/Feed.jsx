@@ -9,9 +9,7 @@ function Feed() {
   const { data: session } = useSession();
   const firstName = session.user.name.split(" ")[0];
   const { openModal } = useContext(ModalContext);
-  const [posts, setPosts] = useState();
-
-  console.log("HELLO");
+  const [posts, setPosts] = useState([]);
 
   useEffect(
     () =>
@@ -33,7 +31,7 @@ function Feed() {
         <img className="h-12 rounded-full" src={session.user.image} alt="" />
         <button
           className="bg-gray-100 text-gray-500 rounded-full px-3 flex-1 mx-3
-        hover:bg-gray-300 text-start -py-1"
+          hover:bg-gray-300 text-start -py-1"
           onClick={openModal}
         >
           What's on your mind, {firstName}?
