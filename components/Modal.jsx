@@ -20,15 +20,15 @@ export default function Modal() {
   const firstName = session.user.name.split(" ")[0];
   const textRef = useRef(null);
   const filePickerRef = useRef(null);
-  const [uploadingPost, setUploadingPost] = useState(false)
+  const [uploadingPost, setUploadingPost] = useState(false);
 
   const uploadPost = async () => {
-    // Create a post and add to the firestore 'posts' collection
-    if(uploadingPost) return
+    // TODO don't post if there is no text in textarea
+    if (!selectedImage) return;
 
-    setUploadingPost(true)
+    if (uploadingPost) return;
 
-    if (!textRef.current.value) return;
+    setUploadingPost(true);
 
     const docRef = await addDoc(collection(db, "posts"), {
       userName: session.user.name,
@@ -39,32 +39,23 @@ export default function Modal() {
 
     console.log("\t### Modal -- uploadPost ###\nDOC ADDED WITH ID:", docRef.id);
 
-
-    if (!selectedImage) {
-      closeModal();
-      return;
-    }
-
     const imageRef = ref(storage, `posts/$docRef.id}/image`);
 
-    await uploadString(imageRef, selectedImage, "data_url").then(
-      async (snapshot) => {
-        const downloadURL = await getDownloadURL(imageRef);
-        await updateDoc(doc(db, "posts", docRef.id), {
-          image: downloadURL,
-        });
-      }
-    );
-
-    setSelectedImage(null);
-    setUploadingPost(false)
-    console.log(uploadingPost)
+    await uploadString(imageRef, selectedImage, "data_url").then(async () => {
+      // Snapshot
+      const downloadURL = await getDownloadURL(imageRef);
+      await updateDoc(doc(db, "posts", docRef.id), {
+        image: downloadURL,
+      });
+    });
 
     console.log(
       "\t### Modal -- uploadPost ###\nIMAGE ADDED TO DOC, WITH ID:",
       docRef.id
     );
 
+    setSelectedImage(null);
+    setUploadingPost(false);
     closeModal();
   };
 
@@ -134,9 +125,8 @@ export default function Modal() {
 
                   {/** Text Area */}
                   <textarea
-                    className={`text-2xl font-medium p-3 outline-none h-40 ${
-                      selectedImage && "h-15 w-full max-w-md"
-                    }`}
+                    className={`text-2xl font-medium p-3 outline-none h-40 ${selectedImage && "h-15 w-full max-w-md"
+                      }`}
                     name=""
                     id=""
                     cols="30"
@@ -178,7 +168,9 @@ export default function Modal() {
 
                   {/** Post Button*/}
                   <button
-                    className={"border rounded-md px-4 py-3 font-bold max-w-md w-full items-center bg-blue-600 text-white cursor-pointer disabled:bg-gray-300 disabled:cursor-not-allowed"}
+                    className={
+                      "border rounded-md px-4 py-3 font-bold max-w-md w-full items-center bg-blue-600 text-white cursor-pointer disabled:bg-gray-300 disabled:cursor-not-allowed"
+                    }
                     onClick={uploadPost}
                   >
                     {uploadingPost ? "Uploading Post" : "Post"}
