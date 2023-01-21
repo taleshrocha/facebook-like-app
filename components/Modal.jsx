@@ -23,13 +23,13 @@ export default function Modal() {
   const [uploadingPost, setUploadingPost] = useState(false);
 
   const uploadPost = async () => {
-    // TODO don't post if there is no text in textarea
-    if (!selectedImage) return;
+    if (textRef.current.value === "") return;
 
     if (uploadingPost) return;
 
     setUploadingPost(true);
 
+    // Add the post data to the "posts" collection in Firebase
     const docRef = await addDoc(collection(db, "posts"), {
       userName: session.user.name,
       userImg: session.user.image,
@@ -41,22 +41,25 @@ export default function Modal() {
 
     const imageRef = ref(storage, `posts/$docRef.id}/image`);
 
-    await uploadString(imageRef, selectedImage, "data_url").then(async () => {
-      // Snapshot
-      const downloadURL = await getDownloadURL(imageRef);
-      await updateDoc(doc(db, "posts", docRef.id), {
-        image: downloadURL,
+    // Add the image to the post only if it is avaliable
+    if (selectedImage) {
+      await uploadString(imageRef, selectedImage, "data_url").then(async () => {
+        // Snapshot
+        const downloadURL = await getDownloadURL(imageRef);
+        await updateDoc(doc(db, "posts", docRef.id), {
+          image: downloadURL,
+        });
       });
-    });
 
-    console.log(
-      "\t### Modal -- uploadPost ###\nIMAGE ADDED TO DOC, WITH ID:",
-      docRef.id
-    );
+      console.log(
+        "\t### Modal -- uploadPost ###\nIMAGE ADDED TO DOC, WITH ID:",
+        docRef.id
+      );
+    }
 
-    setSelectedImage(null);
-    setUploadingPost(false);
     closeModal();
+    setUploadingPost(false);
+    setSelectedImage(null);
   };
 
   const getImage = (e) => {
@@ -169,9 +172,12 @@ export default function Modal() {
                   {/** Post Button*/}
                   <button
                     className={
-                      "border rounded-md px-4 py-3 font-bold max-w-md w-full items-center bg-blue-600 text-white cursor-pointer disabled:bg-gray-300 disabled:cursor-not-allowed"
+                      "rounded-md px-4 py-3 font-bold max-w-md w-full items-center " +
+                      "bg-blue-600 cursor-pointer text-white " +
+                      "disabled:bg-gray-300 disabled:cursor-not-allowed disabled:text-gray-500"
                     }
                     onClick={uploadPost}
+                    disabled={uploadingPost}
                   >
                     {uploadingPost ? "Uploading Post" : "Post"}
                   </button>
