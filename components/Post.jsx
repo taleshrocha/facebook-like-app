@@ -1,4 +1,7 @@
-import { DotsHorizontalIcon, GlobeIcon } from "@heroicons/react/solid";
+import {
+  DotsHorizontalIcon, GlobeIcon,
+  PaperAirplaneIcon
+} from "@heroicons/react/solid";
 import {
   EmojiHappyIcon,
   ChatIcon,
@@ -6,7 +9,7 @@ import {
   ShareIcon,
 } from "@heroicons/react/outline";
 import { useSession } from "next-auth/react";
-import {AutoTextArea} from "./AutoTextArea"
+import { AutoTextArea } from "./AutoTextArea";
 
 function Post({ image, text, timeStamp, userImg, userName }) {
   const { data: session } = useSession();
@@ -76,17 +79,18 @@ function Post({ image, text, timeStamp, userImg, userName }) {
         <div className="flex items-center m-4">
           <img className="h-8 rounded-full" src={session.user.image} alt="" />
 
-          {/*
-          <div className="flex bg-gray-200 rounded-full p-1 ml-2 flex-1">
-            <textarea
+          <div className="flex-col bg-gray-200 rounded-2xl 
+            pl-2 pt-1 pb-2 pr-4 ml-2 flex-1">
+            <AutoTextArea
               className="ml-2 bg-transparent outline-none 
-              flex-1 text-sm resize-none"
+              text-sm resize-none w-full h-full overflow-hidden"
               placeholder="Write a comment..."
             />
-            <EmojiHappyIcon className="h-6 text-gray-500" />
+            <div className="flex justify-between mt-5 mb-1">
+              <EmojiHappyIcon className="h-5 text-gray-500" />
+              <PaperAirplaneIcon className="h-5 text-gray-500 rotate-90" />
+            </div>
           </div>
-*/}
-          <AutoTextArea/>
         </div>
       )}
 
