@@ -6,6 +6,7 @@ import {
   ShareIcon,
 } from "@heroicons/react/outline";
 import { useSession } from "next-auth/react";
+import {AutoTextArea} from "./AutoTextArea"
 
 function Post({ image, text, timeStamp, userImg, userName }) {
   const { data: session } = useSession();
@@ -75,13 +76,17 @@ function Post({ image, text, timeStamp, userImg, userName }) {
         <div className="flex items-center m-4">
           <img className="h-8 rounded-full" src={session.user.image} alt="" />
 
+          {/*
           <div className="flex bg-gray-200 rounded-full p-1 ml-2 flex-1">
-            <input
-              className="ml-2 bg-transparent outline-none flex-1 text-sm"
+            <textarea
+              className="ml-2 bg-transparent outline-none 
+              flex-1 text-sm resize-none"
               placeholder="Write a comment..."
             />
             <EmojiHappyIcon className="h-6 text-gray-500" />
           </div>
+*/}
+          <AutoTextArea/>
         </div>
       )}
 
