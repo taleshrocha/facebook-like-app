@@ -1,3 +1,5 @@
+import { PlusIcon } from "@heroicons/react/outline";
+
 export default function Conversations() {
   return (
     <div className="hidden lg:flex flex-col mt-4 mr-3 container max-w-xs justify-self-end">
