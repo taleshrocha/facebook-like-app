@@ -1,13 +1,4 @@
-import {
-  ClockIcon,
-  PlusIcon,
-  UserGroupIcon,
-  UsersIcon,
-} from "@heroicons/react/outline";
-import { useSession } from "next-auth/react";
-
 export default function Conversations() {
-  const { data: session } = useSession();
   return (
     <div className="hidden lg:flex flex-col mt-4 mr-3 container max-w-xs justify-self-end">
       <button

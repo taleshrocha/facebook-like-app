@@ -1,6 +1,7 @@
 import {
-  DotsHorizontalIcon, GlobeIcon,
-  PaperAirplaneIcon
+  DotsHorizontalIcon,
+  GlobeIcon,
+  PaperAirplaneIcon,
 } from "@heroicons/react/solid";
 import {
   EmojiHappyIcon,
@@ -9,10 +10,11 @@ import {
   ShareIcon,
 } from "@heroicons/react/outline";
 import { useSession } from "next-auth/react";
-import { AutoTextArea } from "./AutoTextArea";
+import { useState } from "react";
 
 function Post({ image, text, timeStamp, userImg, userName }) {
   const { data: session } = useSession();
+  const [isTextAreaEmpty, setIsTextAreaEmpty] = useState(true)
 
   const comments = [
     {
@@ -79,16 +81,26 @@ function Post({ image, text, timeStamp, userImg, userName }) {
         <div className="flex items-center m-4">
           <img className="h-8 rounded-full" src={session.user.image} alt="" />
 
-          <div className="flex-col bg-gray-200 rounded-2xl 
-            pl-2 pt-1 pb-2 pr-4 ml-2 flex-1">
-            <AutoTextArea
+          <div
+            className="flex-col bg-gray-200 rounded-2xl 
+            pl-2 pt-1 pb-2 pr-4 ml-2 flex-1"
+          >
+            <textarea
               className="ml-2 bg-transparent outline-none 
               text-sm resize-none w-full h-full overflow-hidden"
               placeholder="Write a comment..."
+              onChange={(e) => {
+                e.target.style.height = "inherit";
+                e.target.style.height = `${e.target.scrollHeight}px`;
+                setIsTextAreaEmpty(e.target.value == "") 
+              }}
             />
             <div className="flex justify-between mt-5 mb-1">
               <EmojiHappyIcon className="h-5 text-gray-500" />
-              <PaperAirplaneIcon className="h-5 text-gray-500 rotate-90" />
+              <PaperAirplaneIcon
+                className={`h-5 text-gray-500 rotate-90 
+                ${!isTextAreaEmpty && "text-blue-500"}`}
+              />
             </div>
           </div>
         </div>
