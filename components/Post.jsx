@@ -10,11 +10,18 @@ import {
   ShareIcon,
 } from "@heroicons/react/outline";
 import { useSession } from "next-auth/react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 function Post({ image, text, timeStamp, userImg, userName }) {
   const { data: session } = useSession();
-  const [isTextAreaEmpty, setIsTextAreaEmpty] = useState(true)
+  const [comment, setComment] = useState("");
+  const textAreaRef = useRef(null);
+
+  const sendComment = async (e) => {
+    e.preventDefault(); // Avoids to reinitialize the application
+    setComment("");
+    textAreaRef.current.style.height = "inherit";
+  };
 
   const comments = [
     {
@@ -85,23 +92,34 @@ function Post({ image, text, timeStamp, userImg, userName }) {
             className="flex-col bg-gray-200 rounded-2xl 
             pl-2 pt-1 pb-2 pr-4 ml-2 flex-1"
           >
-            <textarea
-              className="ml-2 bg-transparent outline-none 
-              text-sm resize-none w-full h-full overflow-hidden"
-              placeholder="Write a comment..."
-              onChange={(e) => {
-                e.target.style.height = "inherit";
-                e.target.style.height = `${e.target.scrollHeight}px`;
-                setIsTextAreaEmpty(e.target.value == "") 
-              }}
-            />
-            <div className="flex justify-between mt-5 mb-1">
-              <EmojiHappyIcon className="h-5 text-gray-500" />
-              <PaperAirplaneIcon
-                className={`h-5 text-gray-500 rotate-90 
-                ${!isTextAreaEmpty && "text-blue-500"}`}
+            <form>
+              <textarea
+                className="ml-2 bg-transparent outline-none 
+                text-sm resize-none w-full h-full overflow-hidden"
+                placeholder="Write a comment..."
+                value={comment}
+                ref={textAreaRef}
+                onChange={(e) => {
+                  e.target.style.height = "inherit";
+                  e.target.style.height = `${e.target.scrollHeight}px`;
+                  setComment(e.target.value);
+                }}
               />
-            </div>
+              <div className="flex justify-between mt-5 mb-1">
+                <EmojiHappyIcon className="h-5 text-gray-500" />
+                <button
+                  className="group"
+                  type="submit"
+                  disabled={!comment.trim()}
+                  onClick={sendComment}
+                >
+                  <PaperAirplaneIcon
+                    className="h-5 rotate-90 text-blue-500 
+                    group-disabled:text-gray-500"
+                  />
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
