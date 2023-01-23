@@ -16,6 +16,7 @@ function Post({ image, text, timeStamp, userImg, userName }) {
   const { data: session } = useSession();
   const [comment, setComment] = useState("");
   const textAreaRef = useRef(null);
+  const formRef = useRef(null);
 
   const sendComment = async (e) => {
     e.preventDefault(); // Avoids to reinitialize the application
@@ -92,13 +93,17 @@ function Post({ image, text, timeStamp, userImg, userName }) {
             className="flex-col bg-gray-200 rounded-2xl 
             pl-2 pt-1 pb-2 pr-4 ml-2 flex-1"
           >
-            <form>
+            <form ref={formRef}>
               <textarea
                 className="ml-2 bg-transparent outline-none 
                 text-sm resize-none w-full h-full overflow-hidden"
                 placeholder="Write a comment..."
                 value={comment}
                 ref={textAreaRef}
+                rows={1}
+                onKeyDown={(e) => {
+                  if (e.key == "Enter" && !e.shiftKey) sendComment(e);
+                }}
                 onChange={(e) => {
                   e.target.style.height = "inherit";
                   e.target.style.height = `${e.target.scrollHeight}px`;
