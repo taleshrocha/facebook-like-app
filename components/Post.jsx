@@ -102,7 +102,9 @@ function Post({ image, text, timeStamp, userImg, userName }) {
                 ref={textAreaRef}
                 rows={1}
                 onKeyDown={(e) => {
-                  if (e.key == "Enter" && !e.shiftKey) sendComment(e);
+                  if (e.key == "Enter" && !e.shiftKey) {
+                    comment.trim() ? sendComment(e) : e.preventDefault();
+                  }
                 }}
                 onChange={(e) => {
                   e.target.style.height = "inherit";
