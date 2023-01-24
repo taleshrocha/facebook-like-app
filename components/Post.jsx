@@ -10,14 +10,34 @@ import {
   ShareIcon,
 } from "@heroicons/react/outline";
 import { useSession } from "next-auth/react";
-import { useRef, useState } from "react";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { useEffect, useRef, useState } from "react";
+import {
+  addDoc,
+  collection,
+  onSnapshot,
+  orderBy,
+  query,
+  serverTimestamp,
+} from "firebase/firestore";
 import { db } from "../firebase";
 
 function Post({ id, image, text, timeStamp, userImg, userName }) {
   const { data: session } = useSession();
   const [comment, setComment] = useState("");
   const textAreaRef = useRef(null);
+  const [comments, setComments] = useState([]);
+
+  useEffect(
+    () =>
+      onSnapshot(
+        query(
+          collection(db, "posts", id, "comments"),
+          orderBy("timeStamp", "desc")
+        ),
+        (snapshot) => { setComments(snapshot.docs) }
+      ),
+    [db, id]
+  );
 
   const sendComment = async (e) => {
     e.preventDefault();
@@ -35,29 +55,8 @@ function Post({ id, image, text, timeStamp, userImg, userName }) {
       timeStamp: serverTimestamp(),
     });
 
-    console.log("Comment:", commentToSend, "\nSended to Post with id:", id)
+    console.log("Comment:", commentToSend, "\nSended to Post with id:", id);
   };
-
-  const comments = [
-    {
-      id: 1,
-      name: "Tales Rocha",
-      image: "https://github.com/taleshrocha.png",
-      input: "Comment one. Hello",
-    },
-    {
-      id: 2,
-      name: "Mozart",
-      image: "https://github.com/taleshrocha.png",
-      input: "Comment two. World",
-    },
-    {
-      id: 3,
-      name: "Bethoveen",
-      image: "https://github.com/taleshrocha.png",
-      input: "Comment three. I'm Tales Rocha",
-    },
-  ];
 
   return (
     <div className="border border-gray-300 rounded-lg bg-white mb-4">
@@ -146,12 +145,16 @@ function Post({ id, image, text, timeStamp, userImg, userName }) {
       {comments.map((comment) => (
         <div key={comment.id} className="mx-4 my-1">
           <div className="flex">
-            <img className="h-8 rounded-full" src={comment.image} alt="" />
+            <img
+              className="h-8 rounded-full"
+              src={comment.data().userImg}
+              alt=""
+            />
             {/** Name and comment */}
             <div className="ml-2">
               <div className="bg-gray-200 rounded-2xl p-2 items-center">
-                <p className="font-bold text-sm">{comment.name}</p>
-                <p className="text-sm">{comment.input}</p>
+                <p className="font-bold text-sm">{comment.data().userName}</p>
+                <p className="text-sm">{comment.data().comment}</p>
               </div>
               {/** Likes, shares */}
               <div className="ml-4 flex space-x-6 items-end">
