@@ -40,6 +40,7 @@ function Feed() {
       {posts.map((post) => (
         <Post
           key={post.id}
+          id={post.id}
           image={post.data().image}
           text={post.data().text}
           timeStamp={post.data().timeStamp}

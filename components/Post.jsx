@@ -11,17 +11,31 @@ import {
 } from "@heroicons/react/outline";
 import { useSession } from "next-auth/react";
 import { useRef, useState } from "react";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { db } from "../firebase";
 
-function Post({ image, text, timeStamp, userImg, userName }) {
+function Post({ id, image, text, timeStamp, userImg, userName }) {
   const { data: session } = useSession();
   const [comment, setComment] = useState("");
   const textAreaRef = useRef(null);
-  const formRef = useRef(null);
 
   const sendComment = async (e) => {
-    e.preventDefault(); // Avoids to reinitialize the application
+    e.preventDefault();
+
+    // Avoid spans
+    const commentToSend = comment;
+
     setComment("");
     textAreaRef.current.style.height = "inherit";
+
+    await addDoc(collection(db, "posts", id, "comments"), {
+      comment: commentToSend,
+      userName: session.user.name,
+      userImg: session.user.image,
+      timeStamp: serverTimestamp(),
+    });
+
+    console.log("Comment:", commentToSend, "\nSended to Post with id:", id)
   };
 
   const comments = [
@@ -93,40 +107,37 @@ function Post({ image, text, timeStamp, userImg, userName }) {
             className="flex-col bg-gray-200 rounded-2xl 
             pl-2 pt-1 pb-2 pr-4 ml-2 flex-1"
           >
-            <form ref={formRef}>
-              <textarea
-                className="ml-2 bg-transparent outline-none 
+            <textarea
+              className="ml-2 bg-transparent outline-none 
                 text-sm resize-none w-full h-full overflow-hidden"
-                placeholder="Write a comment..."
-                value={comment}
-                ref={textAreaRef}
-                rows={1}
-                onKeyDown={(e) => {
-                  if (e.key == "Enter" && !e.shiftKey) {
-                    comment.trim() ? sendComment(e) : e.preventDefault();
-                  }
-                }}
-                onChange={(e) => {
-                  e.target.style.height = "inherit";
-                  e.target.style.height = `${e.target.scrollHeight}px`;
-                  setComment(e.target.value);
-                }}
-              />
-              <div className="flex justify-between mt-5 mb-1">
-                <EmojiHappyIcon className="h-5 text-gray-500" />
-                <button
-                  className="group"
-                  type="submit"
-                  disabled={!comment.trim()}
-                  onClick={sendComment}
-                >
-                  <PaperAirplaneIcon
-                    className="h-5 rotate-90 text-blue-500 
+              placeholder="Write a comment..."
+              value={comment}
+              ref={textAreaRef}
+              rows={1}
+              onKeyDown={(e) => {
+                if (e.key == "Enter" && !e.shiftKey) {
+                  comment.trim() ? sendComment(e) : e.preventDefault();
+                }
+              }}
+              onChange={(e) => {
+                e.target.style.height = "inherit";
+                e.target.style.height = `${e.target.scrollHeight}px`;
+                setComment(e.target.value);
+              }}
+            />
+            <div className="flex justify-between mt-5 mb-1">
+              <EmojiHappyIcon className="h-5 text-gray-500" />
+              <button
+                className="group"
+                disabled={!comment.trim()}
+                onClick={sendComment}
+              >
+                <PaperAirplaneIcon
+                  className="h-5 rotate-90 text-blue-500 
                     group-disabled:text-gray-500"
-                  />
-                </button>
-              </div>
-            </form>
+                />
+              </button>
+            </div>
           </div>
         </div>
       )}
