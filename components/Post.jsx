@@ -20,6 +20,7 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 import { db } from "../firebase";
+import Moment from "react-moment"
 
 function Post({ id, image, text, timeStamp, userImg, userName }) {
   const { data: session } = useSession();
@@ -67,7 +68,9 @@ function Post({ id, image, text, timeStamp, userImg, userName }) {
           <h1 className="font-bold">{userName}</h1>
           <div className="flex items-center space-x-1 text-gray-500 text-sm">
             {/** Message elapsed time */}
-            <p>2d</p>
+            <Moment fromNow>
+              {timeStamp.toDate()}
+            </Moment>
             <p>·</p>
             <GlobeIcon className="h-4" />
           </div>
@@ -160,7 +163,9 @@ function Post({ id, image, text, timeStamp, userImg, userName }) {
               <div className="ml-4 flex space-x-6 items-end">
                 <CommentButton name="Like" />
                 <CommentButton name="Reply" />
-                <p className="font-normal text-xs text-gray-500">5h</p>
+                <Moment fromNow className="font-normal text-xs text-gray-500">
+                  {comment.data().timeStamp?.toDate()}
+                </Moment>
               </div>
             </div>
           </div>
