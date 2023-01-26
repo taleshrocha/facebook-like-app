@@ -79,7 +79,7 @@ function Post({ id, image, text, timeStamp, userImg, userName }) {
       </div>
 
       {/** Caption */}
-      <p className="ml-4 mb-2">{text}</p>
+      <p className="whitespace-pre-wrap overflow-scroll mx-4 mb-2 max-h-36">{text}</p>
 
       {/** Content */}
       {image && <img className="object-cover w-full" src={image} alt="" />}
@@ -88,8 +88,12 @@ function Post({ id, image, text, timeStamp, userImg, userName }) {
       <div className="flex justify-between text-sm text-gray-600 items-center p-2">
         <p>100 likes</p>
         <div className="flex space-x-2">
-          <p>{comments.length == 0 ? "No comments" : `${comments.length} 
-              comment${comments.length == 1 ? "" : "s"}`}</p>
+          <p>
+            {comments.length == 0
+              ? "No comments"
+              : `${comments.length} 
+              comment${comments.length == 1 ? "" : "s"}`}
+          </p>
           <p>25 shares</p>
         </div>
       </div>
