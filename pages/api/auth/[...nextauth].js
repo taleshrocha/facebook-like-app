@@ -11,5 +11,11 @@ export default NextAuth({
   pages: {
     signIn: "/auth/signin",
   },
+  callbacks: {
+    async session({ session, token, user }) {
+      session.user.id = token.sub;
+      return session;
+    },
+  },
   secret: process.env.FACEBOOK_CLIENT_SECRET,
 });

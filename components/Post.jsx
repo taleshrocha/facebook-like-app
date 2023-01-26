@@ -2,11 +2,12 @@ import {
   DotsHorizontalIcon,
   GlobeIcon,
   PaperAirplaneIcon,
+  ThumbUpIcon as ThumbUpIconSolid,
 } from "@heroicons/react/solid";
 import {
   EmojiHappyIcon,
   ChatIcon,
-  ThumbUpIcon,
+  ThumbUpIcon as ThumbUpIconLine,
   ShareIcon,
 } from "@heroicons/react/outline";
 import { useSession } from "next-auth/react";
@@ -14,10 +15,13 @@ import { useEffect, useRef, useState } from "react";
 import {
   addDoc,
   collection,
+  deleteDoc,
+  doc,
   onSnapshot,
   orderBy,
   query,
   serverTimestamp,
+  setDoc,
 } from "firebase/firestore";
 import { db } from "../firebase";
 import Moment from "react-moment";
@@ -27,6 +31,8 @@ function Post({ id, image, text, timeStamp, userImg, userName }) {
   const [comment, setComment] = useState("");
   const textAreaRef = useRef(null);
   const [comments, setComments] = useState([]);
+  const [hasLiked, setHasLiked] = useState(false);
+  const [likes, setLikes] = useState([]);
 
   useEffect(
     () =>
@@ -41,6 +47,39 @@ function Post({ id, image, text, timeStamp, userImg, userName }) {
       ),
     [db, id]
   );
+
+  // Get all the likes
+  useEffect(
+    () =>
+      onSnapshot(
+        query(
+          collection(db, "posts", id, "likes"),
+          orderBy("timeStamp", "desc")
+        ),
+        (snapshot) => setLikes(snapshot.docs)
+      ),
+    [db, id]
+  );
+
+  // Get if the user has liked the post
+  useEffect(
+    () =>
+      setHasLiked(
+        likes.findIndex((like) => like.id === session?.user?.id) !== -1
+      ),
+    [likes]
+  );
+
+  const likePost = async () => {
+    if (hasLiked) {
+      await deleteDoc(doc(db, "posts", id, "likes", session.user.id));
+    } else {
+      await setDoc(doc(db, "posts", id, "likes", session.user.id), {
+        userName: session.user.name,
+        timeStamp: serverTimestamp(),
+      });
+    }
+  };
 
   const sendComment = async (e) => {
     e.preventDefault();
@@ -79,14 +118,21 @@ function Post({ id, image, text, timeStamp, userImg, userName }) {
       </div>
 
       {/** Caption */}
-      <p className="whitespace-pre-wrap overflow-scroll mx-4 mb-2 max-h-36">{text}</p>
+      <p className="whitespace-pre-wrap overflow-scroll mx-4 mb-2 max-h-36">
+        {text}
+      </p>
 
       {/** Content */}
       {image && <img className="object-cover w-full" src={image} alt="" />}
 
       {/** Content Info */}
       <div className="flex justify-between text-sm text-gray-600 items-center p-2">
-        <p>100 likes</p>
+        <p>
+            {likes.length == 0
+              ? "No likes"
+              : `${likes.length} 
+              like${likes.length == 1 ? "" : "s"}`}
+        </p>
         <div className="flex space-x-2">
           <p>
             {comments.length == 0
@@ -100,7 +146,12 @@ function Post({ id, image, text, timeStamp, userImg, userName }) {
 
       {/** Like, Comments, Share */}
       <div className="flex justify-center border-y m-2">
-        <IconButton Icon={ThumbUpIcon} name="Like" />
+        <IconButton
+          className={`${hasLiked ? "!text-blue-500" : ""}`}
+          onClick={likePost}
+          Icon={hasLiked ? ThumbUpIconSolid : ThumbUpIconLine}
+          name="Like"
+        />
         <IconButton Icon={ChatIcon} name="Comment" />
         <IconButton Icon={ShareIcon} name="Share" />
       </div>
@@ -184,15 +235,16 @@ function Post({ id, image, text, timeStamp, userImg, userName }) {
   );
 }
 
-function IconButton({ Icon, name }) {
+function IconButton({ Icon, name, className, ...props}) {
   return (
-    <div
-      className="flex space-x-2 px-8 py-1 hover:bg-gray-200 transition-all items-center
-     duration-200 ease-out rounded-sm text-gray-500 hover:cursor-pointer my-1"
+    <button
+      {...props}
+      className={`flex space-x-2 px-8 py-1 hover:bg-gray-200 transition-all items-center
+     duration-200 ease-out rounded-sm text-gray-500 hover:cursor-pointer my-1 ${className}`}
     >
-      <Icon className="h-4 sm:h-6" />
+      <Icon className={`h-4 sm:h-6 ${className}`} />
       <p className="text-xs sm:text-base font-bold">{name}</p>
-    </div>
+    </button>
   );
 }
 
