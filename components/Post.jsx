@@ -20,7 +20,7 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 import { db } from "../firebase";
-import Moment from "react-moment"
+import Moment from "react-moment";
 
 function Post({ id, image, text, timeStamp, userImg, userName }) {
   const { data: session } = useSession();
@@ -35,7 +35,9 @@ function Post({ id, image, text, timeStamp, userImg, userName }) {
           collection(db, "posts", id, "comments"),
           orderBy("timeStamp", "desc")
         ),
-        (snapshot) => { setComments(snapshot.docs) }
+        (snapshot) => {
+          setComments(snapshot.docs);
+        }
       ),
     [db, id]
   );
@@ -68,9 +70,7 @@ function Post({ id, image, text, timeStamp, userImg, userName }) {
           <h1 className="font-bold">{userName}</h1>
           <div className="flex items-center space-x-1 text-gray-500 text-sm">
             {/** Message elapsed time */}
-            <Moment fromNow>
-              { timeStamp?.toDate()}
-            </Moment>
+            <Moment fromNow>{timeStamp?.toDate()}</Moment>
             <p>·</p>
             <GlobeIcon className="h-4" />
           </div>
@@ -88,7 +88,8 @@ function Post({ id, image, text, timeStamp, userImg, userName }) {
       <div className="flex justify-between text-sm text-gray-600 items-center p-2">
         <p>100 likes</p>
         <div className="flex space-x-2">
-          <p>{comments.length} comments</p>
+          <p>{comments.length == 0 ? "No comments" : `${comments.length} 
+              comment${comments.length == 1 ? "" : "s"}`}</p>
           <p>25 shares</p>
         </div>
       </div>
@@ -145,32 +146,36 @@ function Post({ id, image, text, timeStamp, userImg, userName }) {
       )}
 
       {/** Comments*/}
-      {comments.map((comment) => (
-        <div key={comment.id} className="mx-4 my-1">
-          <div className="flex">
-            <img
-              className="h-8 rounded-full"
-              src={comment.data().userImg}
-              alt=""
-            />
-            {/** Name and comment */}
-            <div className="ml-2">
-              <div className="bg-gray-200 rounded-2xl p-2 items-center">
-                <p className="font-bold text-sm">{comment.data().userName}</p>
-                <p className="text-sm break-words whitespace-pre-wrap max-w-xs max-h-24 overflow-y-scroll">{comment.data().comment}</p>
-              </div>
-              {/** Likes, shares */}
-              <div className="ml-4 flex space-x-6 items-end">
-                <CommentButton name="Like" />
-                <CommentButton name="Reply" />
-                <Moment fromNow className="font-normal text-xs text-gray-500">
-                  {comment.data().timeStamp?.toDate()}
-                </Moment>
+      <div className=" max-h-52 overflow-y-scroll">
+        {comments.map((comment) => (
+          <div key={comment.id} className="mx-4 my-1">
+            <div className="flex">
+              <img
+                className="h-8 rounded-full"
+                src={comment.data().userImg}
+                alt=""
+              />
+              {/** Name and comment */}
+              <div className="ml-2">
+                <div className="bg-gray-200 rounded-2xl p-2 items-center">
+                  <p className="font-bold text-sm">{comment.data().userName}</p>
+                  <p className="text-sm break-words whitespace-pre-wrap max-w-xs max-h-24 overflow-y-scroll">
+                    {comment.data().comment}
+                  </p>
+                </div>
+                {/** Likes, shares */}
+                <div className="ml-4 flex space-x-6 items-end">
+                  <CommentButton name="Like" />
+                  <CommentButton name="Reply" />
+                  <Moment fromNow className="font-normal text-xs text-gray-500">
+                    {comment.data().timeStamp?.toDate()}
+                  </Moment>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 }
