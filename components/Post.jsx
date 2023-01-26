@@ -157,7 +157,7 @@ function Post({ id, image, text, timeStamp, userImg, userName }) {
             <div className="ml-2">
               <div className="bg-gray-200 rounded-2xl p-2 items-center">
                 <p className="font-bold text-sm">{comment.data().userName}</p>
-                <p className="text-sm">{comment.data().comment}</p>
+                <p className="text-sm break-words whitespace-pre-wrap max-w-xs max-h-24 overflow-y-scroll">{comment.data().comment}</p>
               </div>
               {/** Likes, shares */}
               <div className="ml-4 flex space-x-6 items-end">
