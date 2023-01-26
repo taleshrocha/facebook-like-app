@@ -69,7 +69,7 @@ function Post({ id, image, text, timeStamp, userImg, userName }) {
           <div className="flex items-center space-x-1 text-gray-500 text-sm">
             {/** Message elapsed time */}
             <Moment fromNow>
-              {timeStamp.toDate()}
+              { timeStamp?.toDate()}
             </Moment>
             <p>·</p>
             <GlobeIcon className="h-4" />
@@ -88,7 +88,7 @@ function Post({ id, image, text, timeStamp, userImg, userName }) {
       <div className="flex justify-between text-sm text-gray-600 items-center p-2">
         <p>100 likes</p>
         <div className="flex space-x-2">
-          <p>50 comments</p>
+          <p>{comments.length} comments</p>
           <p>25 shares</p>
         </div>
       </div>
