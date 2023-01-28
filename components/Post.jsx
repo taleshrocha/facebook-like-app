@@ -30,9 +30,28 @@ function Post({ id, image, text, timeStamp, userImg, userName }) {
   const { data: session } = useSession();
   const [comment, setComment] = useState("");
   const textAreaRef = useRef(null);
+  const popUpMenuRef = useRef(null);
+  const buttonPopUpRef = useRef(null);
   const [comments, setComments] = useState([]);
   const [hasLiked, setHasLiked] = useState(false);
   const [likes, setLikes] = useState([]);
+  const [popUpMenu, setPopUpMenu] = useState(false);
+
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (
+        popUpMenuRef.current &&
+        buttonPopUpRef.current &&
+        !popUpMenuRef.current.contains(e.target) &&
+        !buttonPopUpRef.current.contains(e.target)
+      )
+        setPopUpMenu(false);
+    }
+    document.addEventListener("mouseup", handleClickOutside);
+    return () => {
+      document.removeEventListener("mouseup", handleClickOutside);
+    };
+  }, [popUpMenuRef, buttonPopUpRef]);
 
   useEffect(
     () =>
@@ -103,7 +122,7 @@ function Post({ id, image, text, timeStamp, userImg, userName }) {
   return (
     <div className="border border-gray-300 rounded-lg bg-white mb-4">
       {/** Header */}
-      <div className="flex justify-between items-center p-2 mx-2 mt-2">
+      <div className="flex justify-between items-center p-2 mx-2 mt-2 relative">
         <img className="h-12 rounded-full" src={userImg} alt="" />
         <div className="ml-2 flex-1">
           <h1 className="font-bold">{userName}</h1>
@@ -114,7 +133,23 @@ function Post({ id, image, text, timeStamp, userImg, userName }) {
             <GlobeIcon className="h-4" />
           </div>
         </div>
-        <DotsHorizontalIcon className="icon bg-transparent" />
+        <button
+          ref={buttonPopUpRef}
+          className="icon bg-transparent"
+          onMouseUp={() => setPopUpMenu(!popUpMenu)}
+        >
+          <DotsHorizontalIcon />
+        </button>
+        {popUpMenu && (
+          <div
+            ref={popUpMenuRef}
+            className="flex justify-center absolute right-0 top-0 mr-8 mt-10 bg-white w-40 h-60 z-10 shadow-md rounded-xl"
+          >
+            <button className="flex-1 h-8 hover:bg-gray-100">
+              Delete post
+            </button>
+          </div>
+        )}
       </div>
 
       {/** Caption */}
@@ -128,9 +163,9 @@ function Post({ id, image, text, timeStamp, userImg, userName }) {
       {/** Content Info */}
       <div className="flex justify-between text-sm text-gray-600 items-center p-2">
         <p>
-            {likes.length == 0
-              ? "No likes"
-              : `${likes.length} 
+          {likes.length == 0
+            ? "No likes"
+            : `${likes.length} 
               like${likes.length == 1 ? "" : "s"}`}
         </p>
         <div className="flex space-x-2">
@@ -235,7 +270,7 @@ function Post({ id, image, text, timeStamp, userImg, userName }) {
   );
 }
 
-function IconButton({ Icon, name, className, ...props}) {
+function IconButton({ Icon, name, className, ...props }) {
   return (
     <button
       {...props}
