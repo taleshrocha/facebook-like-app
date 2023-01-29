@@ -194,7 +194,11 @@ function Post({ id, image, text, timeStamp, userImg, userName }) {
       {/** Comment Input */}
       {session && (
         <div className="flex items-center m-4">
-          <img className="h-8 rounded-full" src={session.user.image} alt="" />
+          {session.user.image ? (
+            <img className="h-8 rounded-full" src={session.user.image} alt="" />
+          ) : (
+            <div className="h-8 rounded-full bg-red-500"></div>
+          )}
 
           <div
             className="flex-col bg-gray-200 rounded-2xl 
