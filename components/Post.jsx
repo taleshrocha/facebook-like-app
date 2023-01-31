@@ -119,6 +119,10 @@ function Post({ id, image, text, timeStamp, userImg, userName }) {
     console.log("Comment:", commentToSend, "\nSended to Post with id:", id);
   };
 
+  const deletePost = async () => {
+    await deleteDoc(doc(db, "posts", id));
+  };
+
   return (
     <div className="border border-gray-300 rounded-lg bg-white mb-4">
       {/** Header */}
@@ -145,7 +149,10 @@ function Post({ id, image, text, timeStamp, userImg, userName }) {
             ref={popUpMenuRef}
             className="flex justify-center absolute right-0 top-0 mr-8 mt-10 bg-white w-40 h-60 z-10 shadow-md rounded-xl"
           >
-            <button className="flex-1 h-8 hover:bg-gray-100">
+            <button
+              onClick={deletePost}
+              className="flex-1 h-8 hover:bg-gray-100"
+            >
               Delete post
             </button>
           </div>
