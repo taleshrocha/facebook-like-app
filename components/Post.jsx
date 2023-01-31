@@ -17,6 +17,7 @@ import {
   collection,
   deleteDoc,
   doc,
+  getDoc,
   onSnapshot,
   orderBy,
   query,
@@ -111,6 +112,7 @@ function Post({ id, image, text, timeStamp, userImg, userName }) {
 
     await addDoc(collection(db, "posts", id, "comments"), {
       comment: commentToSend,
+      userId: session.user.id,
       userName: session.user.name,
       userImg: session.user.image,
       timeStamp: serverTimestamp(),
@@ -120,7 +122,12 @@ function Post({ id, image, text, timeStamp, userImg, userName }) {
   };
 
   const deletePost = async () => {
-    await deleteDoc(doc(db, "posts", id));
+    const docSnap = await getDoc(doc(db, "posts", id));
+    console.log("Session Id:", session.user.id, "UserId:", docSnap.data().userId)
+
+    if (docSnap.data().userId === session.user.id) {
+      deleteDoc(doc(db, "posts", id));
+    }
   };
 
   return (
@@ -139,7 +146,8 @@ function Post({ id, image, text, timeStamp, userImg, userName }) {
         </div>
         <button
           ref={buttonPopUpRef}
-          className="icon bg-transparent"
+          className="inline-flex p-2 h-10 w-10 bg-gray-200 rounded-full
+          text-gray-700 cursor-pointer hover:bg-gray-300 bg-transparent"
           onMouseUp={() => setPopUpMenu(!popUpMenu)}
         >
           <DotsHorizontalIcon />

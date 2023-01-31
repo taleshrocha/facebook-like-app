@@ -33,6 +33,7 @@ export default function Modal() {
     const docRef = await addDoc(collection(db, "posts"), {
       userName: session.user.name,
       userImg: session.user.image,
+      userId: session.user.id,
       text: textRef.current.value,
       timeStamp: serverTimestamp(),
     });
